@@ -1,33 +1,26 @@
 package com.db.hackathon.Dementia.service.impl;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.db.hackathon.Dementia.dto.UserDto;
-import com.db.hackathon.Dementia.entity.Forgot;
-import com.db.hackathon.Dementia.entity.Login;
 import com.db.hackathon.Dementia.entity.Patient;
-import com.db.hackathon.Dementia.entity.Result;
-import com.db.hackathon.Dementia.entity.Role;
 import com.db.hackathon.Dementia.entity.User;
 import com.db.hackathon.Dementia.repository.PatientRepository;
-import com.db.hackathon.Dementia.repository.RoleRepository;
 import com.db.hackathon.Dementia.repository.UserRepository;
 import com.db.hackathon.Dementia.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -78,18 +71,7 @@ public class UserServiceImpl implements UserService {
 	}
 
     @Override
-    public void saveUser(UserDto userDto) {
-        User user = new User();
-        user.setName(userDto.getFirstName() + " " + userDto.getLastName());
-        user.setUserName(userDto.getUserName());
-     // encrypt the password using spring security
-//        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        user.setPassword(userDto.getPassword());
-//        Role role = roleRepository.findByName("ROLE_ADMIN");
-//        if(role == null){
-//            role = checkRoleExist();
-//        }
-//        user.setRoles(Arrays.asList(role));
+    public void saveUser(User user) {
         userRepository.save(user);
     }
     
