@@ -6,7 +6,7 @@ import com.db.hackathon.Dementia.entity.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    User findByEmail(String email);
+    User findByUserName(String userName);
     
 
 }

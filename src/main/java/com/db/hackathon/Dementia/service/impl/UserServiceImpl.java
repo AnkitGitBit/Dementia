@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -12,9 +14,11 @@ import org.springframework.web.client.RestTemplate;
 import com.db.hackathon.Dementia.dto.UserDto;
 import com.db.hackathon.Dementia.entity.Forgot;
 import com.db.hackathon.Dementia.entity.Login;
+import com.db.hackathon.Dementia.entity.Patient;
 import com.db.hackathon.Dementia.entity.Result;
 import com.db.hackathon.Dementia.entity.Role;
 import com.db.hackathon.Dementia.entity.User;
+import com.db.hackathon.Dementia.repository.PatientRepository;
 import com.db.hackathon.Dementia.repository.RoleRepository;
 import com.db.hackathon.Dementia.repository.UserRepository;
 import com.db.hackathon.Dementia.service.UserService;
@@ -31,21 +35,10 @@ public class UserServiceImpl implements UserService {
 	@Autowired
     private UserRepository userRepository;
 	@Autowired
-    private RoleRepository roleRepository;
+    private PatientRepository patientRepository;
 	@Autowired
     private PasswordEncoder passwordEncoder;
-
-//    public UserServiceImpl(UserRepository userRepository,
-//                           RoleRepository roleRepository,
-//                           PasswordEncoder passwordEncoder
-//                          ) {
-//        this.userRepository = userRepository;
-//        this.roleRepository = roleRepository;
-//        this.passwordEncoder = passwordEncoder;
-//    }
-    
-    
-    
+        
     @Autowired
 	private RestTemplate restTemplate;
 
@@ -78,12 +71,17 @@ public class UserServiceImpl implements UserService {
 
         return response.getBody();
     }
+	
+	public List<Patient> patientList(Long userId){
+		List<Patient> lPatient = patientRepository.findByUserId(userId);
+		return lPatient;
+	}
 
     @Override
     public void saveUser(UserDto userDto) {
         User user = new User();
         user.setName(userDto.getFirstName() + " " + userDto.getLastName());
-        user.setEmail(userDto.getEmail());
+        user.setUserName(userDto.getUserName());
      // encrypt the password using spring security
 //        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         user.setPassword(userDto.getPassword());
@@ -96,45 +94,40 @@ public class UserServiceImpl implements UserService {
     }
     
     @Override
-    public Result loginUser(Login request) {
-    	User existingUser = userRepository.findByEmail(request.getEmail());
-	    Result res= new Result();
-	    if(existingUser != null && existingUser.getEmail() != null && !existingUser.getEmail().isEmpty()){
-	    	if(request.getPassword().equals(existingUser.getPassword())) {
-	    		res.setMessage(
-		                "login successfull-" + existingUser.getName() + " Welcome to HA");
-	    	}else {
-	    		res.setMessage("password is incorrect");
+    public ResponseEntity<User> loginUser(User request) {
+    	User existingUser = userRepository.findByUserName(request.getUserName());
+	    if(existingUser != null && existingUser.getUserName() != null && !existingUser.getUserName().isEmpty()){
+	    	if(!request.getPassword().equals(existingUser.getPassword())) {
+	    	return new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
 	    	}
-	    	return res;
+	    	return new ResponseEntity<User>(existingUser,HttpStatus.OK);
 	    }
-	    res.setMessage("User "+request.getEmail() +" is not registered with HA");
-	    return res;
+	    return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
     }
     
-    @Override
-    public Result forgotPassword(Forgot request) {
-    	User existingUser = userRepository.findByEmail(request.getEmail());
-	    Result res= new Result();
-	    if(existingUser != null && existingUser.getEmail() != null && !existingUser.getEmail().isEmpty()){
-	    	if(request.getPassword().equals(existingUser.getPassword())) {
-	    		res.setMessage(
-		                "Given password has been used before for " + existingUser.getName());
-	    	}else {
-	    		existingUser.setPassword(request.getPassword());
-	    		userRepository.save(existingUser);
-	    		res.setMessage("password has been updated successfully");
-	    	}
-	    	return res;
-	    }
-	    res.setMessage("User "+request.getEmail() +" is not registered with HA");
-	    return res;
-    }
+//    @Override
+//    public Result forgotPassword(Forgot request) {
+//    	User existingUser = userRepository.findByEmail(request.getEmail());
+//	    Result res= new Result();
+//	    if(existingUser != null && existingUser.getEmail() != null && !existingUser.getEmail().isEmpty()){
+//	    	if(request.getPassword().equals(existingUser.getPassword())) {
+//	    		res.setMessage(
+//		                "Given password has been used before for " + existingUser.getName());
+//	    	}else {
+//	    		existingUser.setPassword(request.getPassword());
+//	    		userRepository.save(existingUser);
+//	    		res.setMessage("password has been updated successfully");
+//	    	}
+//	    	return res;
+//	    }
+//	    res.setMessage("User "+request.getEmail() +" is not registered with HA");
+//	    return res;
+//    }
 
-    @Override
-    public User findUserByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
+//    @Override
+//    public User findUserByEmail(String email) {
+//        return userRepository.findByEmail(email);
+//    }
 
     @Override
     public List<UserDto> findAllUsers() {
@@ -149,7 +142,7 @@ public class UserServiceImpl implements UserService {
         String[] str = user.getName().split(" ");
         userDto.setFirstName(str[0]);
         userDto.setLastName(str.length > 1 ? str[1]:"");
-        userDto.setEmail(user.getEmail());
+        userDto.setUserName(user.getUserName());
         userDto.setId(user.getId());
         userDto.setPassword(user.getPassword());
         return userDto;
