@@ -12,7 +12,7 @@ RUN mvn package -DskipTests
 # Stage 2: run the previously built JAR file
 FROM openjdk:17-jdk-alpine
 
-COPY --from=builder /app/target/Hackathon-Dementia-*.jar /Hackathon-Dementia.jar
+COPY --from=builder /app/target/Dementia-backend-*.jar /Dementia-backend.jar
 
 # Run the web service on container startup.
-CMD ["java","-Djava.security.egd=file:/dev/./urandom","-Dserver.port=${PORT}","-jar","/Hackathon-Dementia.jar"]
+CMD ["java","-Djava.security.egd=file:/dev/./urandom","-Dserver.port=${PORT}","-jar","/Dementia-backend.jar"]
