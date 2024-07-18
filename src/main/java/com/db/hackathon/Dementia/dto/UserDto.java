@@ -20,7 +20,7 @@ public class UserDto
     private String lastName;
     @NotEmpty(message = "Email should not be empty")
     @Email
-    private String userName;
+    private String email;
     @NotEmpty(message = "Password should not be empty")
     private String password;
 }
