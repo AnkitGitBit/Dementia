@@ -78,11 +78,11 @@
 		</dependency>-->
 		<!-- MySQL dependency -->
 		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
-		<dependency>
+		<!--<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>8.0.33</version>
-		</dependency>
+		</dependency>-->
 
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -101,6 +101,15 @@
 		</dependency>-->
 		<!--
 		https://mvnrepository.com/artifact/jakarta.validation/jakarta.validation-api -->
+		<!--
+		https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-gcp-starter-sql-mysql -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-gcp-starter-sql-mysql</artifactId>
+			<version>1.2.8.RELEASE</version>
+		</dependency>
+
+
 		<dependency>
 			<groupId>jakarta.validation</groupId>
 			<artifactId>jakarta.validation-api</artifactId>
