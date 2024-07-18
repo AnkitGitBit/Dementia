@@ -31,7 +31,7 @@ public class Patient {
     @Column(nullable=false)
     private String pName;
 
-    @Column(nullable=false, unique=true)
+    @Column(nullable=false)
     private String pGender;
 
     @Column(nullable=false)
