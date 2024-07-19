@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,12 +39,14 @@ public class AuthController {
 	
 	
 	@GetMapping("/patientList")
+	@CrossOrigin(origins = "*")
     public ResponseEntity<List<Patient>> patientList(Long userId){
     	logger.info("patientList for userID: "+ userId);
     	return new ResponseEntity<List<Patient>>(userService.patientList(userId),HttpStatus.OK);
     }
 	
 	@PostMapping("/patient/save")
+	@CrossOrigin(origins = "*")
     public ResponseEntity<String> patientSave(@Valid @RequestBody Patient patient){
 		logger.info("patientSave started");
         patientRepository.save(patient);
@@ -53,18 +56,21 @@ public class AuthController {
 	
 	// handler method to handle login request
     @PostMapping("/login")
+    @CrossOrigin(origins = "*")
     public ResponseEntity<User> login(@RequestBody User request){
     	logger.info("login started");
     	return userService.loginUser(request);
     }
 	
 	@GetMapping("/prompt")
+	@CrossOrigin(origins = "*")
 	public String getResponse(String prompt, String geminiKey) {
 		return userService.callApi(prompt,geminiKey);
 	}
 
  // handler method to handle user registration form submit request
     @PostMapping("/register/save")
+    @CrossOrigin(origins = "*")
     public ResponseEntity<String> registration(@Valid @RequestBody User user){
 //        User existingUser = userRepository.findByUserName(userDto.getUserName());
 //        if(existingUser != null && existingUser.getUserName() != null && !existingUser.getUserName().isEmpty()){
@@ -75,6 +81,7 @@ public class AuthController {
     }
     
     @GetMapping("/users")
+    @CrossOrigin(origins = "*")
     public List<UserDto> users(Model model){
     	logger.info("getUser started");
         List<UserDto> users = userService.findAllUsers();
