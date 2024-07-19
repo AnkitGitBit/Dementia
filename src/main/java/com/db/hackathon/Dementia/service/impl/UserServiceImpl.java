@@ -1,5 +1,6 @@
 package com.db.hackathon.Dementia.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,6 +22,8 @@ import com.db.hackathon.Dementia.repository.UserRepository;
 import com.db.hackathon.Dementia.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import jakarta.persistence.Column;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -65,8 +68,44 @@ public class UserServiceImpl implements UserService {
         return response.getBody();
     }
 	
+	
+	 private Long pId;
+	    
+	    @Column(nullable=false)
+	    private Long userId;
+
+	    @Column(nullable=false)
+	    private String pName;
+
+	    @Column(nullable=false)
+	    private String pGender;
+
+	    @Column(nullable=false)
+	    private String pSeverity;
 	public List<Patient> patientList(Long userId){
-		List<Patient> lPatient = patientRepository.findByUserId(userId);
+		List<Patient> lPatient = new ArrayList<Patient>();
+		Patient p1= new Patient();
+		p1.setUserId(1l);
+		p1.setPId(1l);
+		p1.setPName("Ankit S");
+		p1.setPGender("M");
+		p1.setPSeverity("LOW");
+		lPatient.add(p1);
+		Patient p2= new Patient();
+		p2.setUserId(1l);
+		p2.setPId(2l);
+		p2.setPName("Babita K");
+		p2.setPGender("F");
+		p2.setPSeverity("LOW");
+		lPatient.add(p2);
+		Patient p3= new Patient();
+		p3.setUserId(1l);
+		p3.setPId(3l);
+		p3.setPName("Rohit C");
+		p3.setPGender("M");
+		p3.setPSeverity("MEDIUM");
+		lPatient.add(p3);
+		//List<Patient> lPatient = patientRepository.findByUserId(userId);
 		return lPatient;
 	}
 
@@ -77,7 +116,12 @@ public class UserServiceImpl implements UserService {
     
     @Override
     public ResponseEntity<User> loginUser(User request) {
-    	User existingUser = userRepository.findByUserName(request.getUserName());
+    	User existingUser = new User();
+    	existingUser.setId(1l);
+    	existingUser.setName("Nidhi B");
+    	existingUser.setUserName("nidhi123");
+    	existingUser.setPassword("admin");
+    	//User existingUser = userRepository.findByUserName(request.getUserName());
 	    if(existingUser != null && existingUser.getUserName() != null && !existingUser.getUserName().isEmpty()){
 	    	if(!request.getPassword().equals(existingUser.getPassword())) {
 	    	return new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
